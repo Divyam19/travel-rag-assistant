@@ -117,46 +117,6 @@ def search(query: str, time_range: str | None = None) -> tuple[list[WebResult], 
     return parse_results(raw["results"]), origin
 
 
-def store_results(results: list[WebResult], ttl_days: int | None = None) -> int:
-    """Write result pages into the corpus as web articles that expire. Returns how many were new.
-
-    The top web_fetch_top_n pages are fetched with our own scraper; others (and any page that
-    blocks us) fall back to Tavily's snippet. Web pages never bump ingest_generation, so a
-    fallback does not invalidate cached answers. ttl_days overrides how long they are kept: pages
-    fetched for time-sensitive questions should expire quickly so they are not served stale later.
-    """
-    s = get_settings()
-    fetcher = Fetcher(delay=WEB_FETCH_DELAY_SECONDS)
-    expires = datetime.now(timezone.utc) + timedelta(days=ttl_days or s.web_article_ttl_days)
-    stored = 0
-    with connect() as conn:
-        conn.autocommit = True
-        for i, result in enumerate(results):
-            url = normalize_url(result.url)
-            url_hash = sha(url)
-            if conn.execute("select 1 from articles where url_hash = %s", (url_hash,)).fetchone():
-                continue
-            title, body, published = result.title, result.snippet, None
-            if i < s.web_fetch_top_n:
-                try:
-                    page_title, body, published = extract_article(fetcher, url)
-                    title = page_title or title
-                except FetchError:
-                    body = result.snippet
-            if len(body.split()) < MIN_SNIPPET_WORDS:
-                continue
-            c_hash = content_hash(body)
-            if conn.execute("select 1 from articles where content_hash = %s", (c_hash,)).fetchone():
-                continue
-            article_id = save_article(
-                conn, url=url, url_hash=url_hash, content_hash=c_hash, source=urlparse(url).netloc,
-                title=title, body=body, published_at=published, chunks=prepare_chunks(title, body),
-                source_type="web", expires_at=expires,
-            )
-            stored += article_id is not None
-    return stored
-
-
 # ---------------------------------------------------------------------------
 # Interactive path: fetch pages, answer from them immediately, index in the background.
 # The old flow wrote every page to Postgres and then re-queried it, which measured at 9.4s of a
@@ -170,7 +130,7 @@ class FetchedPage:
     site: str
     text: str
     published_at: datetime | None
-    score: float          # Tavily's own relevance score
+    score: float          # position in the search results: 1.0 for the first, falling by 0.01 each
     full_text: bool       # True when we fetched the page, False when it is only a search snippet
 
 
@@ -180,12 +140,12 @@ def _interactive_fetcher() -> Fetcher:
     return Fetcher(delay=WEB_FETCH_DELAY_SECONDS, timeout=get_settings().web_fetch_timeout_seconds)
 
 
-def fetch_pages(results: list[WebResult], scores: list[float] | None = None) -> list[FetchedPage]:
+def fetch_pages(results: list[WebResult]) -> list[FetchedPage]:
     """Fetch the top results concurrently. Anything that blocks or times out degrades to its
     snippet rather than failing the turn."""
     s = get_settings()
     fetcher = _interactive_fetcher()
-    scores = scores or [1.0 - 0.01 * i for i in range(len(results))]
+    scores = [1.0 - 0.01 * i for i in range(len(results))]
 
     def one(index_result: tuple[int, WebResult]) -> FetchedPage:
         i, result = index_result
@@ -228,8 +188,3 @@ def _index_pages(pages: list[FetchedPage], ttl_days: int | None) -> None:
                              expires_at=expires)
     except Exception:  # noqa: BLE001 - background work must never surface into a chat turn
         logging.getLogger(__name__).exception("background indexing of web pages failed")
-
-
-def flush_indexing() -> None:
-    """Block until queued background indexing finishes. For tests and scripts."""
-    _indexer.submit(lambda: None).result()

@@ -15,7 +15,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
-from .config import ROOT, get_settings
+from .config import ROOT
 from .db import connect
 from .llm import flush_usage
 from .evaluation import EvalResult, evaluate_answer

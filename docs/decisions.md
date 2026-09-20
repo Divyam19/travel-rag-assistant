@@ -463,3 +463,17 @@ Remaining levers, not taken: the routing prompt is about 650 tokens (below the 1
 caches automatically) and is tuned on this set, so shrinking it risks the routing accuracy that
 took several rounds to reach. Index context is already at its measured floor: three chunks lose
 two detail queries.
+
+
+## Scope decision: no response cache
+
+The original plan called for a two-layer answer cache (exact and semantic) in Postgres. It was
+descoped, and everything that only existed to serve it was removed in one pass: the `cache_*`
+settings, the `answer_cache` table, and the `ingest_generation` counter (its sole job was
+invalidating cached answers when the corpus changed). Migration 0003 drops both tables; 0001 stays as
+history. `web_search_cache`, which reuses Tavily results for 12 hours to save credits, is unrelated
+and stays.
+
+Also removed as dead: `api_host`/`api_port` (the port is set in the Makefile, so the settings did
+nothing), `web_context_top_n` (the web budget is `web_context_tokens` and `web_max_pages`), the unused
+Supabase REST credentials, and the superseded `store_results` write-back path.

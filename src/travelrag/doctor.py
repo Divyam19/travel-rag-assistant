@@ -11,8 +11,7 @@ from .config import get_settings
 from .db import connect
 
 EXPECTED_TABLES = {
-    "articles", "chunks", "app_state", "ingest_runs",
-    "answer_cache", "web_search_cache", "tavily_usage",
+    "articles", "chunks", "ingest_runs", "llm_calls", "web_search_cache", "tavily_usage",
 }
 
 

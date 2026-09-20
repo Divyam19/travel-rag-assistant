@@ -52,7 +52,6 @@ class Settings(BaseSettings):
     # Retrieval / agent
     retrieval_top_k: int = Field(12, ge=1)
     context_top_n: int = Field(4, ge=1)            # index answers stay tight; 3 loses two detail queries
-    web_context_top_n: int = Field(10, ge=1)       # web answers get a big budget (user decision)
     max_chunks_per_article: int = Field(1, ge=1)   # stop one page monopolising the context
     neighbour_chunks: int = Field(1, ge=0, le=2)   # chunks either side of a hit: 0 drops detail recall 8/8 -> 1/8
     max_sub_queries: int = Field(3, ge=1, le=4)
@@ -64,14 +63,7 @@ class Settings(BaseSettings):
     eval_sim_pass: float = Field(0.60, ge=0, le=1)  # every answer sentence at least this similar to a source sentence: pass without an LLM (see docs/decisions.md)
     eval_sim_fail: float = Field(0.0, ge=0, le=1)  # any sentence below this is ungrounded without asking an LLM (0 = never)
 
-    # Cache
-    cache_enabled: bool = True
-    cache_semantic_threshold: float = Field(0.95, ge=0, le=1)
-    cache_ttl_hours: int = Field(24, ge=1)
-
     # App
-    api_host: str = "127.0.0.1"
-    api_port: int = 8000
     cors_origins: str = "http://localhost:5173"
 
     @field_validator("openai_api_key", "supabase_db_url", "tavily_api_key")

@@ -146,8 +146,6 @@ def run_source(fetcher: Fetcher, src: Source, limit: int | None) -> bool:
         stats, failures, error = Stats(), [], None
         try:
             stats, failures = ingest_source(conn, fetcher, src, limit)
-            if stats["inserted"]:
-                conn.execute("update app_state set value = value + 1 where key = 'ingest_generation'")
         except Exception as e:  # noqa: BLE001 - e.g. the feed itself is unreachable
             error = f"{type(e).__name__}: {e}"
         if failures and not error:

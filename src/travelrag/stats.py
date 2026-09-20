@@ -17,7 +17,6 @@ def main() -> None:
             "select a.source, count(*), avg(c.token_count)::int, max(c.token_count)"
             " from chunks c join articles a on a.id = c.article_id group by a.source"
         ).fetchall()
-        generation = conn.execute("select value from app_state where key = 'ingest_generation'").fetchone()[0]
 
     by_source: dict[str, list[int]] = {}
     for source, body in articles:
@@ -32,7 +31,7 @@ def main() -> None:
     everything = [t for tokens in by_source.values() for t in tokens]
     if everything:
         print(f"\nall: {len(everything)} articles, median {int(statistics.median(everything))} tokens, "
-              f"{sum(c[0] for c in chunks.values())} chunks, ingest_generation={generation}")
+              f"{sum(c[0] for c in chunks.values())} chunks")
 
 
 if __name__ == "__main__":
