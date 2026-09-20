@@ -9,28 +9,135 @@ Those are in [`docs/decisions.md`](docs/decisions.md), with the numbers.
 
 ## How it works
 
+### At a glance
+
+```mermaid
+flowchart LR
+    U["User question"] --> A["Agent<br/>(LangGraph)"]
+    A -->|"ambiguous"| C["Clarifying question"]
+    C --> U
+    A -->|"searchable"| R["Retriever<br/>(vector index)"]
+    R -->|"confident"| G["Grounded draft answer"]
+    R -->|"thin or unsure"| W["Live web search"]
+    W --> G
+    G --> E["Evaluation layer"]
+    E -->|"pass"| F["Final answer, streamed<br/>to the React UI"]
+    E -->|"flagged"| G
+```
+
+### The full decision flow
+
+Every diamond is a real branch in `src/travelrag/agent.py`. Score bands assume the defaults
+(`CONFIDENCE_THRESHOLD=0.53`, `CONFIDENCE_GRAY_MARGIN=0.08`).
+
 ```mermaid
 flowchart TD
-    U[User message + last 6 turns] --> A[analyze<br/>small model, 1 call]
-    A -->|ambiguous| C[Ask one clarifying question]
-    A -->|not travel| O[Politely decline]
-    A -->|searchable| R[retrieve<br/>1 search per part of the question]
-    R --> G{confident?<br/>weakest part decides}
-    G -->|yes| GEN
-    G -->|unsure| J[small-model relevance check] --> G2{sufficient?}
-    G2 -->|yes| GEN
-    G -->|no| W
-    G2 -->|no| W[web fallback<br/>Tavily finds URLs, we fetch the pages]
-    W -->|pages held in memory| GEN[generate<br/>large model, streamed]
-    W -.->|indexed in the background| DB[(Supabase pgvector)]
-    GEN --> E[evaluate<br/>free checks first, small judge only if needed]
-    E -->|pass| OUT[Answer + citations]
-    E -->|entry rule| D[Answer + disclaimer]
-    E -->|flagged| RETRY[Rewrite once] --> E
-    E -->|still flagged| CAV[Answer + note naming what could not be verified]
-    DB --> R
-    S[9 news and advisory sources<br/>cron every 4 hours] --> DB
+    Q["User message<br/>+ last 6 turns"] --> RL{"Within the rate limit?<br/>10 per minute per client<br/>300 per day overall"}
+    RL -->|"no"| R429["HTTP 429 + Retry-After<br/>costs nothing"]
+    RL -->|"yes"| AN["ANALYZE<br/>small model, temperature 0<br/>one JSON decision"]
+
+    AN --> D1{"Missing a key detail?<br/>(which place, which card)"}
+    D1 -->|"yes"| CL(["Ask ONE clarifying question<br/>END. The reply is merged<br/>with this turn next time"])
+    D1 -->|"no"| D2{"About travel?"}
+    D2 -->|"no"| OT(["Polite decline, no search<br/>END"])
+    D2 -->|"yes"| SQ["Rewrite as a standalone query<br/>split into up to 3 parts<br/>flag if time-sensitive"]
+
+    SQ --> RT["RETRIEVE<br/>embed each part, top 12 chunks each<br/>score every part separately"]
+    RT --> WK["Confidence = the WEAKEST part's best score<br/>a strong part cannot vouch for a weak one"]
+    WK --> BAND{"Score band"}
+    BAND -->|"0.61 or more<br/>(0.69 with several parts)"| CONF["Confident"]
+    BAND -->|"below 0.45<br/>(below 0.37 with several parts)"| THIN["Thin"]
+    BAND -->|"in between"| GJ["Small model checks the top 3 excerpts<br/>against the weakest part"]
+    GJ -->|"sufficient"| CONF
+    GJ -->|"insufficient"| THIN
+
+    CONF --> CTX["Index context<br/>drop hits under 65% of the best<br/>1 chunk per article + its neighbours<br/>merge, keep 4"]
+
+    THIN --> WS["WEB FALLBACK<br/>search every part in parallel"]
+    WS --> WG{"Search allowed?<br/>1 reuse a cached result, 12h<br/>2 else daily cap of 20 calls<br/>3 else live Tavily search"}
+    WG -->|"blocked or failed<br/>for every part"| DG{"Index partly relevant?<br/>best score 0.45 or more"}
+    DG -->|"yes"| CTXD["Use the index context<br/>and say web search was unavailable"]
+    DG -->|"no"| NF(["Say nothing reliable was found<br/>END"])
+    WG -->|"results"| FP["Fetch pages concurrently<br/>top 4 in full, 7s timeout, robots.txt obeyed<br/>others use the search snippet<br/>6 pages max, shared between parts"]
+    FP --> PG{"Any usable page?"}
+    PG -->|"no"| NF
+    PG -->|"yes"| WCTX["Web context<br/>short pages whole, long pages<br/>keep their best window<br/>12,000 tokens max"]
+    FP -.->|"in the background"| IDX[("Index the pages<br/>expire in 14 days,<br/>1 day if time-sensitive")]
+
+    CTX --> GEN
+    CTXD --> GEN
+    WCTX --> GEN
+    GEN["GENERATE<br/>large model, streamed word by word<br/>facts must be cited, arrangement is free<br/>estimates allowed, never converts currency"]
+    GEN --> EV["EVALUATE<br/>see the checker below"]
+    EV -->|"pass"| OK(["Answer + numbered citations<br/>END"])
+    EV -->|"states an entry rule"| DI(["Answer + not-legal-advice note<br/>END"])
+    EV -->|"flagged, first time"| RW["Discard the streamed draft<br/>rewrite once with the rejected<br/>statements listed"]
+    RW --> GEN
+    EV -->|"flagged again"| CV(["Answer + a note naming exactly<br/>what could not be verified<br/>END"])
 ```
+
+### The answer checker
+
+Cheap checks run first and settle most answers. A model only sees the specific claims those checks
+could not settle.
+
+```mermaid
+flowchart TD
+    DR["Draft answer + the exact sources<br/>it was written from"] --> FS{"Contains characters from<br/>another alphabet?"}
+    FS -->|"yes"| FL1["FLAGGED<br/>no model call"]
+    FS -->|"no"| T1["TIER 1, free (one embedding call)<br/>each claim sentence vs. source sentences<br/>every figure and name must appear in the sources"]
+    T1 --> K{"Every claim at least 0.60 similar,<br/>no unverifiable figure or name,<br/>no advisory level, no visa topic?"}
+    K -->|"yes"| ER1{"States an entry rule?<br/>'you need a visa'"}
+    ER1 -->|"yes"| DI["DISCLAIMER"]
+    ER1 -->|"no"| PA["PASS"]
+    K -->|"no"| SEL["Pick up to 6 suspicious claims, worst first<br/>1 figure or name not in the sources<br/>2 advisory level or entry rule<br/>3 weakest similarity"]
+    SEL --> T2["TIER 2, small model<br/>verify only those claims, each with its<br/>4 closest source lines and any line<br/>that contains its figures"]
+    T2 --> PR{"Problems found?"}
+    PR -->|"yes"| FL2["FLAGGED<br/>problems are the offending sentences"]
+    PR -->|"none"| ER2{"States an entry rule?"}
+    ER2 -->|"yes"| DI
+    ER2 -->|"no"| PA
+    T2 -->|"reply unreadable"| FB["Fall back on Tier 1:<br/>flagged if it saw something suspicious,<br/>otherwise pass"]
+```
+
+Outcomes feed the last branch of the decision flow above: pass, disclaimer, one rewrite, then a
+caveat naming what could not be verified.
+
+### How the index is filled
+
+```mermaid
+flowchart LR
+    CR["cron, every 4 hours"] --> SRC["For each of 9 sources"]
+    SRC --> FD["Read the RSS or Atom feed"]
+    FD --> KN{"URL already stored?"}
+    KN -->|"yes"| SK["Skip before any request"]
+    KN -->|"no"| FT{"Page fetchable?"}
+    FT -->|"yes"| PG["Fetch politely<br/>robots.txt, 2s between requests<br/>extract with trafilatura"]
+    FT -->|"blocked (State Dept)"| FX["Use the text in the feed entry"]
+    PG --> MN{"Long enough?<br/>120 words, 30 from a feed"}
+    FX --> MN
+    MN -->|"no"| LG["Log the failure, carry on"]
+    MN -->|"yes"| HS{"Same content seen before?"}
+    HS -->|"yes"| SK
+    HS -->|"no"| CH["Chunk: 400 tokens, 50 overlap"]
+    CH --> EM["Embed"] --> ST[("Supabase pgvector<br/>one transaction per article")]
+    CR --> PU["Delete expired web pages"]
+```
+
+A failed article or a failed source never stops the run, and re-running is safe.
+
+### Where each threshold lives
+
+| Setting | Default | Controls |
+|---|---|---|
+| `CONFIDENCE_THRESHOLD` / `CONFIDENCE_GRAY_MARGIN` | 0.53 / 0.08 | The confident, unsure and thin score bands (the margin doubles for multi-part questions) |
+| `CONTEXT_RELATIVE_FLOOR`, `MAX_CHUNKS_PER_ARTICLE`, `NEIGHBOUR_CHUNKS`, `CONTEXT_TOP_N` | 0.65, 1, 1, 4 | What goes into an index answer's prompt |
+| `MAX_SUB_QUERIES`, `WEB_MAX_PAGES`, `WEB_CONTEXT_TOKENS`, `WEB_FETCH_TIMEOUT_SECONDS` | 3, 6, 12000, 7 | The web fallback's breadth and budget |
+| `TAVILY_DAILY_CALL_CAP`, `WEB_RESULT_CACHE_HOURS` | 20, 12 | Web search credits |
+| `EVAL_SIM_PASS`, `MAX_EVAL_RETRIES` | 0.60, 1 | How much the checker trusts free checks, and how many rewrites it allows |
+| `RATE_LIMIT_PER_MINUTE`, `DAILY_CHAT_CAP` | 10, 300 | Protection for the paid APIs |
+
+### The layers
 
 | Layer | What it is |
 |---|---|
