@@ -50,7 +50,7 @@ You need Python 3.12, Node 20+, a Supabase project, an OpenAI key and a Tavily k
 
 ```bash
 cp .env.example .env         # fill in OPENAI_API_KEY, SUPABASE_DB_URL, TAVILY_API_KEY
-make setup                   # venv and dependencies (about 15 seconds on a warm cache)
+make setup                   # venv and dependencies (about 30 seconds)
 make migrate                 # create the tables
 make doctor                  # checks config, database, pgvector and OpenAI
 make ingest                  # first fill of the index (see the note below)

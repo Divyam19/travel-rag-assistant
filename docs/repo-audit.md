@@ -136,3 +136,27 @@ importing private `_get_pool` in `api.py:24`, and `ingest.py:92` loading every c
    on `Fetcher`. Each step leaves the repo working.
 6. **S7 and the README:** rate limiting before any deployment; the README, architecture diagram and
    demo script are the remaining Phase 8 work.
+
+## Resolution
+
+Every finding above was addressed in order, one commit each. Verified by running the tests, by
+mutation-checking the two logic fixes against the original code, and by a clean-clone install.
+
+| Finding | Status | Commit |
+|---|---|---|
+| C3 unused service-role key | Removed from config, `.env`, `.env.example`; backup deleted. **Rotate the key in Supabase** (it appeared in a terminal during the audit) | a49efd5 |
+| C5 no version control | `git init`; secret values scanned for and absent from every tracked file before the first commit | a49efd5 |
+| C4 `make setup` lacked test deps | Installs `.[dev]`; verified in a fresh clone | 72005d2 |
+| C1 judge asked about the wrong part | `weakest_part()`; regression test fails against the old arithmetic | 2f737f5 |
+| C2 second part starved of pages | `interleave()` before the cap; regression test fails against concatenation | 2f737f5 |
+| S6 no tests for `context.py` or the multi-part path | 14 new tests | 2f737f5 |
+| S3/S4 unbuilt cache and dead config | Cache descoped and removed; migration 0003 drops `answer_cache` and `app_state`; dead settings and `store_results` deleted; `EVAL_*` added to `.env.example` | d4bca7b |
+| S1 five shapes of the citation entity | One `Source.to_dict/from_dict`; API and frontend use the model's own field names | 7ff06df |
+| S2 brittle adversarial cases | Alternative phrasings anchored on figures; unappliable cases skipped and reported | 7ff06df |
+| S5 duplicate fetcher logic in `probe.py` | Rebuilt on `Fetcher`; shares the ingester's threshold, asserted by a test | 7ff06df |
+| S7 unauthenticated spending endpoint | Per-client and daily limits, 429 with `Retry-After`; verified live | 7f641dd |
+| Missing README | Written with diagram, setup, demo script and measured results | dede26d |
+
+Not done, deliberately: the judge's unescaped evidence text (an injection attempt failed, so it is
+hardening, not a defect), and the small items listed under "Deliberately not flagged".
+Two limits remain by design: rate limits are in memory per process, and there is still no login.
