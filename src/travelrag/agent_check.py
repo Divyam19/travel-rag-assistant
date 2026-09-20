@@ -75,10 +75,7 @@ def main() -> None:
             out.write(json.dumps({
                 "id": g.id, "query": g.query, "path": r.path, "answer": r.answer, "trace": r.trace,
                 "sources": [s.title for s in r.sources],
-                "context": [{"n": s.n, "title": s.title, "url": s.url, "source": s.source,
-                             "published_at": s.published_at.isoformat() if s.published_at else None,
-                             "similarity": s.similarity, "content": s.content,
-                             "source_type": s.source_type, "chunk_id": s.chunk_id} for s in r.sources],
+                "context": [s.to_dict() for s in r.sources],
             }) + "\n")
             print(f"{'ok  ' if ok else 'FAIL'} {g.id} [{r.path:9}] tokens={r.prompt_tokens + r.completion_tokens:>5}  {g.query}", flush=True)
 

@@ -4,8 +4,8 @@ export interface Source {
   n: number
   title: string
   url: string
-  site: string
-  origin: 'feed' | 'web'
+  source: string
+  source_type: 'feed' | 'web'
   published_at: string | null
   similarity: number
 }

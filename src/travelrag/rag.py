@@ -32,6 +32,28 @@ class Source:
     source_type: str  # 'feed' (curated index) or 'web' (fallback page written back)
     chunk_id: int = 0
 
+    def to_dict(self, include_text: bool = True) -> dict:
+        """The one JSON-ready form of a source, used by the API, the run logs and the evaluator.
+
+        Every field keeps its Python name. The API used to rename `source` to `site` and
+        `source_type` to `origin`, and the run log carried a third hand-written copy, so adding a
+        field meant editing four places and the copies drifted. include_text=False drops the
+        chunk text and id, which the browser does not need.
+        """
+        record = {"n": self.n, "title": self.title, "url": self.url, "source": self.source,
+                  "published_at": self.published_at.isoformat() if self.published_at else None,
+                  "similarity": round(self.similarity, 3), "source_type": self.source_type}
+        if include_text:
+            record.update(content=self.content, chunk_id=self.chunk_id)
+        return record
+
+    @classmethod
+    def from_dict(cls, record: dict) -> "Source":
+        published = record.get("published_at")
+        return cls(record["n"], record["title"], record["url"], record["source"],
+                   datetime.fromisoformat(published) if published else None, record["similarity"],
+                   record.get("content", ""), record["source_type"], record.get("chunk_id", 0))
+
 
 @dataclass
 class Answer:

@@ -41,6 +41,8 @@ def test_chat_streams_status_then_result(monkeypatch):
     assert events[2][1]["next"] == "Writing the answer"
     result = events[3][1]
     assert result["path"] == "index" and result["sources"][0]["similarity"] == 0.712
+    # The browser gets the model's own field names, and no chunk text.
+    assert set(result["sources"][0]) == {"n", "title", "url", "source", "published_at", "similarity", "source_type"}
     assert result["evaluation"]["verdict"] == "pass"
 
 
@@ -96,3 +98,11 @@ def test_answer_tokens_are_streamed_and_a_rejected_draft_is_restarted(monkeypatc
     assert kinds.index("restart") < len(kinds) - kinds[::-1].index("token") - 1
     assert events[-1][0] == "result"
     assert events[-1][1]["answer"] == "Qatar is Level 3 [1]."
+
+
+def test_source_round_trips_through_its_dict_form():
+    from datetime import datetime
+    original = Source(2, "T", "https://x.test", "site", datetime(2026, 9, 18, 10, 30), 0.71234, "body text", "web", 42)
+    restored = Source.from_dict(original.to_dict())
+    assert restored == Source(2, "T", "https://x.test", "site", datetime(2026, 9, 18, 10, 30), 0.712, "body text", "web", 42)
+    assert "content" not in original.to_dict(include_text=False) and "chunk_id" not in original.to_dict(include_text=False)

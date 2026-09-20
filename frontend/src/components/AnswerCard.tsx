@@ -8,7 +8,7 @@ function originLabel(result: ChatResult): string {
     case 'web':
       return 'From a web search'
     case 'index': {
-      const web = result.sources.filter((s) => s.origin === 'web').length
+      const web = result.sources.filter((s) => s.source_type === 'web').length
       if (web === 0) return 'From the travel index'
       return web === result.sources.length ? 'From saved web pages' : 'From the index and saved web pages'
     }
@@ -84,8 +84,8 @@ export function AnswerCard({ result, text, streaming }: { result?: ChatResult; t
               <div>
                 <a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a>
                 <div className="source-meta">
-                  <span className={`chip origin-${s.origin}`}>{s.origin === 'web' ? 'Web' : 'Index'}</span>
-                  {s.site}
+                  <span className={`chip origin-${s.source_type}`}>{s.source_type === 'web' ? 'Web' : 'Index'}</span>
+                  {s.source}
                   {s.published_at && ` · ${new Date(s.published_at).toLocaleDateString()}`}
                   {` · match ${s.similarity.toFixed(2)}`}
                 </div>

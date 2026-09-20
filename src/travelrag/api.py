@@ -76,8 +76,7 @@ def result_payload(result: AgentResult, elapsed: float) -> dict:
     return {
         "answer": result.answer,
         "path": result.path,
-        "sources": [{"n": s.n, "title": s.title, "url": s.url, "site": s.source, "origin": s.source_type,
-                     "published_at": s.published_at, "similarity": round(s.similarity, 3)} for s in result.sources],
+        "sources": [s.to_dict(include_text=False) for s in result.sources],
         "evaluation": None if ev is None else {"verdict": ev.verdict, "tier": ev.tier, "legal": ev.legal,
                                                "min_similarity": round(ev.min_sim, 3), "problems": ev.problems[:3]},
         "trace": result.trace,

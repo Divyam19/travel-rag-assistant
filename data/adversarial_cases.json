@@ -4,8 +4,14 @@
   "base": "a02",
   "kind": "contradiction",
   "replace": [
-   "Level 3: Reconsider Travel",
-   "Level 1: Exercise Normal Precautions"
+   [
+    "Level 3: Reconsider Travel",
+    "Level 1: Exercise Normal Precautions"
+   ],
+   [
+    "Level 3",
+    "Level 1"
+   ]
   ],
   "expect": "flagged"
  },
@@ -14,8 +20,14 @@
   "base": "a07",
   "kind": "contradiction",
   "replace": [
-   "11.8%",
-   "18.4%"
+   [
+    "11.8%",
+    "18.4%"
+   ],
+   [
+    "11.8 percent",
+    "18.4 percent"
+   ]
   ],
   "expect": "flagged"
  },
@@ -24,8 +36,14 @@
   "base": "d01",
   "kind": "contradiction",
   "replace": [
-   "69.4 inches",
-   "72.0 inches"
+   [
+    "69.4 inches",
+    "72.0 inches"
+   ],
+   [
+    "69.4",
+    "72.0"
+   ]
   ],
   "expect": "flagged"
  },
@@ -65,8 +83,14 @@
   "base": "a05",
   "kind": "contradiction",
   "replace": [
-   "Level 4: Do Not Travel",
-   "Level 2: Exercise Increased Caution"
+   [
+    "Level 4: Do Not Travel",
+    "Level 2: Exercise Increased Caution"
+   ],
+   [
+    "Level 4",
+    "Level 2"
+   ]
   ],
   "expect": "flagged"
  },

@@ -13,7 +13,6 @@ answer, so the evaluator sees exactly what the model saw.
 import json
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
 
 from .config import ROOT
 from .db import connect
@@ -58,9 +57,7 @@ def main() -> None:
         rows = answers[qid].get("context")
         if not rows:
             sys.exit(f"{qid} has no stored context. Re-run: python -m travelrag.agent_check")
-        return [Source(r["n"], r["title"], r["url"], r["source"],
-                       datetime.fromisoformat(r["published_at"]) if r["published_at"] else None,
-                       r["similarity"], r["content"], r["source_type"], r["chunk_id"]) for r in rows]
+        return [Source.from_dict(r) for r in rows]
 
     def grade(qid: str, answer: str) -> EvalResult:
         sources = sources_for(qid)

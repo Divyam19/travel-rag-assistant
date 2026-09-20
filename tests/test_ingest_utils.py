@@ -24,3 +24,10 @@ def test_feed_entry_text_strips_html_and_keeps_paragraphs():
 
 def test_feed_entry_text_empty():
     assert feed_entry_text(feedparser.FeedParserDict(summary="  ")) == ""
+
+
+def test_probe_and_ingester_agree_on_what_counts_as_usable():
+    """The probe once judged 'usable' at 150 words while the ingester accepted 120, so its report
+    did not predict what ingestion would store. It now imports the ingester's threshold."""
+    from travelrag import ingest, probe
+    assert probe.MIN_WORDS_FETCHED is ingest.MIN_WORDS_FETCHED
