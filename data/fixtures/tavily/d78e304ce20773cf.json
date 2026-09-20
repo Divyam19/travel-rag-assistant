@@ -1,0 +1,45 @@
+{
+ "query": "What's the weather like in Bali in November?",
+ "follow_up_questions": null,
+ "answer": null,
+ "images": [],
+ "results": [
+  {
+   "title": "Weather in Bali",
+   "url": "https://www.weatherapi.com/",
+   "content": "{'location': {'name': 'Bali', 'region': 'North Sumatra', 'country': 'Indonesia', 'lat': -0.14, 'lon': 98.186, 'tz_id': 'Asia/Jakarta', 'localtime_epoch': 1789893829, 'localtime': '2026-09-20 15:43'}, 'current': {'last_updated_epoch': 1789893000, 'last_updated': '2026-09-20 15:30', 'temp_c': 27.7, 'temp_f': 81.8, 'is_day': 1, 'condition': {'text': 'Overcast', 'icon': '//cdn.weatherapi.com/weather/64x64/day/122.png', 'code': 1009}, 'wind_mph': 4.7, 'wind_kph': 7.6, 'wind_degree': 136, 'wind_dir': 'SE', 'pressure_mb': 1012.0, 'pressure_in': 29.87, 'precip_mm': 0.0, 'precip_in': 0.0, 'humidity': 77, 'cloud': 99, 'feelslike_c': 30.9, 'feelslike_f': 87.6, 'windchill_c': 27.7, 'windchill_f': 81.8, 'heatindex_c': 31.2, 'heatindex_f': 88.2, 'dewpoint_c': 23.2, 'dewpoint_f': 73.8, 'vis_km': 10.0, 'vis_miles': 6.0, 'uv': 6.3, 'gust_mph': 5.6, 'gust_kph': 9.1, 'will_it_rain': 0, 'chance_of_rain': 21, 'will_it_snow': 0, 'chance_of_snow': 0, 'wetbulb_c': 24.5, 'wetbulb_f': 76.0}}",
+   "score": 0.9899048,
+   "raw_content": null,
+   "id": "ad4ed1-00"
+  },
+  {
+   "url": "https://www.weather25.com/asia/indonesia/bali?page=month&month=November",
+   "title": "Bali weather in November 2026 | Bali 14 day weather",
+   "content": "You can expect rain for roughly half of the month of November in Bali. We\u2019re expecting roughly 8 to 15 days of rain, so your rubber boots and umbrella are going to see plenty of use this month if you\u2019re keen on staying dry.\n\nOur weather forecast can give you a great sense of what weather to expect in Bali in November 2026.\n\nIf you\u2019re planning to visit Bali in the near future, we highly recommend that you review the 14 day weather forecast for Bali before you arrive.\n\nTemperatures\n\n29\u00b0 / 24\u00b0 [...] weather25.com \n\nUnited States England Australia Canada\n\n\u00b0F \u00b0C\n\nWeather in November 2026\n\nRemove from your favorite locations Add to my locations\n\nShare\n\n1. Home\n2. Asia\n3. weather in IndonesiaIndonesia\n4. Bali\n5. November\n\nLocation was added to My Locations\n\nLocation was removed from My Locations\n\n# Bali weather in November 2026\n\nThe weather in Bali in November is very hot. The average temperatures are between 24\u00b0C and 29\u00b0C, drinking water regularly is advisable. [...] | 8 Patchy rain possible 28\u00b0 /26\u00b0 | 9 Partly cloudy 29\u00b0 /26\u00b0 | 10 Partly cloudy 28\u00b0 /26\u00b0 | 11 Light rain shower 28\u00b0 /26\u00b0 | 12 Patchy rain possible 28\u00b0 /26\u00b0 | 13 Light rain shower 28\u00b0 /26\u00b0 | 14 Patchy rain possible 28\u00b0 /26\u00b0 |\n| 15 Patchy light drizzle 28\u00b0 /26\u00b0 | 16 Patchy rain possible 28\u00b0 /26\u00b0 | 17 Cloudy 27\u00b0 /26\u00b0 | 18 Patchy rain possible 28\u00b0 /26\u00b0 | 19 Patchy rain possible 28\u00b0 /26\u00b0 | 20 Patchy rain possible 28\u00b0 /26\u00b0 | 21 Patchy rain possible 28\u00b0 /26\u00b0 |",
+   "score": 0.95628047,
+   "raw_content": null,
+   "id": "8f203a-01"
+  },
+  {
+   "url": "https://www.sunheron.com/asia/indonesia/bali-weather-november",
+   "title": "Bali - Indonesia weather in November 2026 | Sunheron",
+   "content": "## Weather overview and FAQs\n\n### Weather overview\n\nIn Bali in November, the average air temperature ranges from 32 \u00b0C (89 \u00b0F) during the day to 23 \u00b0C (73 \u00b0F) at night. There are 13 days of rain on average, where the rainfall is 146 mm (5.74 in).\n\n### Is November a good month to visit Bali? [...] In November in Bali, there are ideal conditions for a vacation. The temperature during the day will be nice 32 \u00b0C (89 \u00b0F). The seawater temperature reaches ideal 28 \u00b0C (83 \u00b0F). At night, temperatures hover around a pleasant 23 \u00b0C (73 \u00b0F).\n\n### What is the sea temperature in Bali in November?\n\nThe temperature of the sea in Bali in November is 28 \u00b0C (83 \u00b0F). This temperature is someone's dream come true, while for someone it may no longer be ideal for the purpose of refreshment. [...] ### What temperature can I expect during the day in Bali in November?\n\nIn Bali in November, the average daily temperatures will be 32 \u00b0C (89 \u00b0F). The great temperature for lying by the sea or pool and sunbathing, everywhere else you will probably be a bit hot. Don't forget to drink during the day, in these temperatures you should hydrate yourself a lot.\n\nSunheron logoDeciding on where to go for a holiday is hard sometimes. Get inspired by the most popular destinations.",
+   "score": 0.95628047,
+   "raw_content": null,
+   "id": "f63424-02"
+  },
+  {
+   "url": "https://www.accuweather.com/en/id/denpasar/202196/november-weather/202196",
+   "title": "Denpasar, Bali, Indonesia Monthly Weather | AccuWeather",
+   "content": "## Temperature Graph\n\n## November Weather in Denpasar\n\n## Further Ahead\n\nFurther Ahead\n\n### December 2026\n\n## Around the Globe\n\nAround the Globe\n\n### Hurricane Tracker\n\n### Severe Weather\n\n### Radar & Maps\n\n### News\n\n### Video\n\nTop Stories\n\nWeather Forecasts\n\nFlooding rain risk to return to Plains, Midwest and Northeast\n\n24 minutes ago\n\nHurricane\n\nEl Ni\u00f1o stifles Atlantic hurricane season, but activity may soon occur\n\n31 minutes ago\n\nAccuWeather Ready [...] # Denpasar, Bali\n\nDenpasar\n\nBali\n\n## Around the Globe\n\nAround the Globe\n\n### Hurricane Tracker\n\n### Severe Weather\n\n### Radar & Maps\n\n### News & Features\n\n### Astronomy\n\n### Business\n\n### Climate\n\n### Health\n\n### Recreation\n\n### Sports\n\n### Travel\n\n### Warnings\n\n### Data Suite\n\n### Forensics\n\n### Advertising\n\n### Superior Accuracy\u2122\n\n### Video\n\n## Monthly\n\n## November\n\n## 2026\n\n## 10-Day",
+   "score": 0.70214266,
+   "raw_content": null,
+   "id": "9f22be-03"
+  }
+ ],
+ "response_time": 1.4,
+ "usage": {
+  "credits": 1
+ },
+ "request_id": "6e17f1fe-c514-454b-8288-5fbaf1a3a135"
+}

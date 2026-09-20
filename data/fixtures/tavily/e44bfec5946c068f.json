@@ -1,0 +1,45 @@
+{
+ "query": "Which airlines fly nonstop from Chicago to Reykjavik?",
+ "follow_up_questions": null,
+ "answer": null,
+ "images": [],
+ "results": [
+  {
+   "title": "Flights from Chicago to Reykjavik (Keflavik): ORD to KEF Flights + Flight Schedule",
+   "url": "https://www.flightconnections.com/flights-from-ord-to-kef",
+   "content": "The distance from Chicago to Reykjavik (Keflavik) is 2,934 miles (4,722 kilometers). Icelandair and United Airlines are flying nonstop from Chicago to Reykjavik (Keflavik).",
+   "score": 0.95067275,
+   "raw_content": null,
+   "id": "111cd1-00"
+  },
+  {
+   "title": "Direct (non-stop) flights from Chicago to Reykjavik - schedules - FlightsFrom.com",
+   "url": "https://www.flightsfrom.com/ORD-KEF",
+   "content": "The monthly calendar shows every direct flight departure from Chicago O Hare International (ORD) with all airlines. Click on a date to see a list of flights or search for the best prices. ... All weekly departures with Icelandair. The week calendar shows every flight departure from Chicago (ORD) to Reykjavik (KEF).",
+   "score": 0.8969848,
+   "raw_content": null,
+   "id": "fdd1e4-01"
+  },
+  {
+   "title": "$353 CHEAP FLIGHTS from Chicago to Iceland | KAYAK",
+   "url": "https://www.kayak.com/flight-routes/Chicago-CHI/Iceland-IS0",
+   "content": "They are Icelandair and United Airlines. The cheapest airline for this route is Icelandair, with the best round-trip deal found costing $367 and arriving in Reykjavik Keflavik Intl Airport (KEF).",
+   "score": 0.7927375,
+   "raw_content": null,
+   "id": "87c2a2-02"
+  },
+  {
+   "title": "List of airlines of the United States - Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/List_of_airlines_of_the_United_States",
+   "content": "| Regional | |  |  |  --- | | Affiliated |  CommuteAir  Endeavor Air  Envoy Air  GoJet Airlines  Horizon Air  Mesa Airlines  Piedmont Airlines  PSA Airlines  Republic Airways  SkyWest Airlines | | Independent |  Advanced Air  Air Flamenco  Aleutian Airways  Bering Air  Boutique Air  Cape Air  Contour Airlines  Denver Air Connection  Gem Air  Grant Aviation  Island Airways  JSX \"JSX (airline)\")  Kenmore Air  Mokulele Airlines  New England Airlines  Reliant Air  San Juan Airlines  SeaPort [...] San Marino\")  S\u00e3o Tom\u00e9 and Pr\u00edncipe  Saudi Arabia  Senegal  Serbia  Seychelles  Sierra Leone  Singapore  Slovakia  Slovenia  Solomon Islands  Somalia  Somaliland\")  South Africa  South Sudan  Spain  Sri Lanka  Sudan  Suriname  Svalbard  Sweden  Switzerland  Syria | | T |  Taiwan  Tajikistan  Tanzania  Thailand  Timor-Leste  Togo  Tonga  Trinidad and Tobago  Tunisia  Turkey  Turkmenistan  Turks and Caicos Islands  Tuvalu | | | |  |  |  --- | | U |  Uganda  Ukraine  United Arab Emirates  United [...] | American Airlines | AA | AAL | AMERICAN |  Charlotte  Chicago\u2013O'Hare  Dallas/Fort Worth  Miami  Philadelphia  Phoenix\u2013Sky Harbor  Los Angeles  New York\u2013JFK  New York\u2013LaGuardia  Washington\u2013National | 1926 | Founded as American Airways and commenced operations in 1936 as American Air Lines Largest airline in the world based on airline company revenue, and scheduled passenger miles flown (per year) in 2025. |",
+   "score": 0.16531023,
+   "raw_content": null,
+   "id": "3c8b47-03"
+  }
+ ],
+ "response_time": 1.91,
+ "usage": {
+  "credits": 1
+ },
+ "request_id": "074cf9f2-8664-4e9d-a12a-db2867565268"
+}

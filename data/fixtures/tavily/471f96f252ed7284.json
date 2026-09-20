@@ -1,0 +1,45 @@
+{
+ "query": "flights from Bangalore to Ireland",
+ "follow_up_questions": null,
+ "answer": null,
+ "images": [],
+ "results": [
+  {
+   "url": "https://www.makemytrip.com/international-flights/bangalore-dublin-cheap-airtickets.html",
+   "title": "Bangalore to Dublin Flights, Fares ...",
+   "content": "Book Bangalore (BLR) to Dublin (DUB) flights on MakeMyTrip from \u20b924541. Choose from 16 daily flights, including 0 non-stop flights, with the fastest flight",
+   "score": 0.8506799,
+   "raw_content": null,
+   "id": "665d73-00"
+  },
+  {
+   "url": "https://www.google.com/travel/flights/flights-from-bengaluru-to-dublin.html",
+   "title": "Find Cheap Flights from Bengaluru to Dublin (BLR - DUB)",
+   "content": "The cheapest round-trip flight from Bengaluru to Dublin starts at $523 from Fri, Oct 23 to Thu, Nov 5. The cheapest one-way flight starts at $282",
+   "score": 0.846159,
+   "raw_content": null,
+   "id": "c61b85-01"
+  },
+  {
+   "url": "https://www.skyscanner.co.in/routes/blr/ie/bengaluru-to-ireland.html",
+   "title": "Flight tickets from Bengaluru to Ireland from \u20b9 ... - Skyscanner",
+   "content": "Cheapest flights to Ireland from Bengaluru \u00b7 Bengaluru to Dublin from \u20b942,872 \u00b7 Bengaluru to Cork from \u20b949,764 \u00b7 Bengaluru to Shannon from \u20b954,566",
+   "score": 0.8342047,
+   "raw_content": null,
+   "id": "e08d35-02"
+  },
+  {
+   "url": "https://www.emirates.com/english/destinations/flights-from-bengaluru-to-ireland",
+   "title": "Flights from Bengaluru (BLR) to Ireland (IE) | Where we fly",
+   "content": "Book flights from Bengaluru to Ireland quickly and securely. When you see our Best Price Guarantee symbol, that means you'll get the best fare for your flights.",
+   "score": 0.7274535,
+   "raw_content": null,
+   "id": "ff74ed-03"
+  }
+ ],
+ "response_time": 0.92,
+ "usage": {
+  "credits": 1
+ },
+ "request_id": "81e2e708-253b-410c-aa52-c40e40cce225"
+}

@@ -1,0 +1,45 @@
+{
+ "query": "Is there a rail strike in France this week?",
+ "follow_up_questions": null,
+ "answer": null,
+ "images": [],
+ "results": [
+  {
+   "url": "https://striketracker.app/strikes-in-france",
+   "title": "France Transport Strikes (September 2026) \u2014 Trains, Buses, Flights & Ferries | Strike Tracker",
+   "content": "Yes. No rail strikes are active in France today, Sunday 13 September 2026. None are scheduled at the moment. Check SNCF (National Rail), RATP (Paris Metro/Bus) and TER (Regional Trains) for real-time service status.\n\nDisclaimer: Information can change rapidly. Strike Tracker is an independent tool; always verify your travel status with official providers.\n\n### Know the strike news in your country? [...] Today, Sunday 13 September 2026, there are 3 strikes in France (1 major, 1 minor, 1 low-impact), mainly affecting airports, including France: easyJet France pilots strike from 13 to 14 September 2026 (Sun 04:59 \u2013 Mon 23:59). 2 of them are long-running actions that started before this week. All of them continue tomorrow; no new strikes start tomorrow. No new strikes are scheduled to start in France in the next 30 days.\n\nUpdated Sunday 13 September 2026 \u00b7 Get France strike alerts\n\nFilter: [...] Yes. 3 strikes that are already running continue tomorrow, including France: easyJet France pilots strike from 13 to 14 September 2026 (Sun 04:59 \u2013 Mon 23:59), UN\u2011CGT CROUS files national strike notice for April 1\u2013September 30, 2026 (dates on/after April 11 listed) and Saint\u2011Nazaire and CARENE territorials: CGT files strike notice for 22 April\u201330 September 2026.\n\n### Are there any strikes planned in France this week?",
+   "score": 0.9092728,
+   "raw_content": null,
+   "id": "2db479-00"
+  },
+  {
+   "url": "https://www.railwaypro.com/wp/rail-strike-in-france",
+   "title": "Rail strike in France",
+   "content": "Railway PRO\n\n# Rail strike in France\n\nJanuary 13, 2026\n\nA national strike by rail workers is taking place on Tuesday, January 13, in France, but the impact on train traffic is expected to be limited, according to information provided by SNCF. [...] The French railway company has announced that, as part of the industrial action called by the CGT-Cheminots and SUD-Rail unions, TGV high-speed trains (InOui and Ouigo) and Intercit\u00e9s trains will run as normal, without significant disruption, on both domestic and international routes.\n\nAs for regional transport, traffic will be \u201calmost normal\u201d, with disruptions limited to certain lines in the \u00cele-de-France and Occitanie regions.",
+   "score": 0.8921218,
+   "raw_content": null,
+   "id": "018609-01"
+  },
+  {
+   "url": "https://www.businesstravelnewseurope.com/Ground-Transport/Strikes-disrupt-rail-services-in-France-and-Italy",
+   "title": "Strikes to disrupt rail services in France and Italy | Business Travel News Europe",
+   "content": "Railway workers' unions in France have called for a nationwide strike on Wednesday 10 June, with major disruption expected across French rail operator SNCF\u2019s network. The labour action is due to commence at 7:00pm on Tuesday 9 June and will last until 6:00am on Thursday 11 June. [...] 28 September, etc.venues County Hall, London\n\nRegent Santa Monica Beach - October 1, 2026\n\nConvene Willis Tower, Chicago - October 8, 2026\n\n# Strikes to disrupt rail services in France and Italy this week\n\nBusiness Travel News on X\n\nRail services across France and Italy will face disruption this week following nationwide strikes in both countries.\n\n### Sign up for more...\n\nNews \u2022 analysis \u2022 podcasts \u2022 reports\n\nI accept the Terms and Conditions and Privacy Policy. [...] In Italy, workers from state-owned rail companies \u2013 Trenitalia, Trenord, and Trenitalia Tper (all part of the FS Group) \u2013 are set to strike for 23 hours beginning at 3:00am on Thursday, 11 June. The labour action will continue until 2:00am on Friday.\n\nService delays and cancellations are expected throughout Thursday and possibly into Friday. However, as per Italian law, services are guaranteed during peak times: between 6:00am and 9:00am, and from 6:00pm to 9:00pm.",
+   "score": 0.8724455,
+   "raw_content": null,
+   "id": "7651fe-02"
+  },
+  {
+   "url": "https://worldinparis.com/transport-in-france-strike-news-tips-for-traveling-to-paris",
+   "title": "Paris and France Transport Strikes 2026 \u2013 Live Updates from a Local | World In Paris",
+   "content": "Are there any strikes in France this week? This calendar lists the France & Paris strike schedule for the next three months. Transportation strikes in France are not planned months in advance; they are usually on short notice, which is why this calendar only covers a three-month period.\n\n### List of Upcoming Strikes in France 2026\n\n18 June 2026: Strike at Paris Airports. Head to chapter #3C for the details.\n\nLast update: 17 June 2026\n\n## 2. Train Strikes in France & Paris 2026 [...] Often, if your train service is cancelled or disrupted by a strike, exchanges and cancellations are possible before the initially scheduled departure, even for non-exchangeable and non-refundable tickets, and are free of charge. You can do this online or at the agency where you made the purchase.\n\n3. Continue with your travel plans despite the strike\n\nIf your train isn\u2019t canceled, the train strike in France may cause delays, or your journey might not be affected at all. [...] ### 4A \u2013 Expected Disruptions: RER Train Strike\n\nThis chapter is about RER train strikes in Paris and Ile-de-France (lines and sections managed by RATP).\n\nNo strikes to report at this time.\n\nExpected Disruptions\n\nGenerally, RATP informs about the RER trains, metro, tramway, and bus lines impacted 1-2 days before the strike date. RATP predicts much more disrupted traffic than on 10 September across the entire network.",
+   "score": 0.76951396,
+   "raw_content": null,
+   "id": "1cf553-03"
+  }
+ ],
+ "response_time": 1.0,
+ "usage": {
+  "credits": 1
+ },
+ "request_id": "6c3ad3b8-38ad-48dc-85e7-7b146a5db165"
+}

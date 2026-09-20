@@ -1,0 +1,129 @@
+"""HTTP API for the chat UI. Run with: uvicorn travelrag.api:app
+
+POST /api/chat streams server-sent events:
+  `status`  the agent finished a step, and what it is doing next
+  `token`   a piece of the answer, as the model writes it
+  `restart` discard the answer so far: the checker rejected the draft and it is being rewritten
+  `result`  the finished answer with sources, verdict and usage (or `error`)
+The answer in `result` is authoritative: the checker may append a disclaimer after the last token.
+The client sends recent history each time; the server keeps no session state.
+"""
+
+import json
+import logging
+import time
+from contextlib import asynccontextmanager
+from typing import Iterator, Literal
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel, Field
+
+from .agent import AgentResult, stream_agent
+from .config import get_settings
+from .db import _get_pool, connect
+
+log = logging.getLogger("travelrag.api")
+
+
+class Message(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(max_length=4000)
+
+
+class ChatRequest(BaseModel):
+    message: str = Field(min_length=1, max_length=1000)
+    history: list[Message] = Field(default_factory=list, max_length=12)
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    _get_pool()  # open the first database connection now so the first chat turn is not slow
+    yield
+
+
+app = FastAPI(title="Travel RAG", lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware, allow_origins=[o.strip() for o in get_settings().cors_origins.split(",") if o.strip()],
+    allow_methods=["GET", "POST"], allow_headers=["Content-Type"],
+)
+
+
+def sse(event: str, data: dict) -> str:
+    return f"event: {event}\ndata: {json.dumps(data, default=str)}\n\n"
+
+
+def next_step(node: str, update: dict) -> str | None:
+    """What the agent does after `node`, for the progress line. None when the turn is over."""
+    if node == "analyze":
+        return None if update.get("path") else "Searching the travel index"
+    if node == "retrieve":
+        return "Checking whether the index answers this"
+    if node == "assess":
+        return "Writing the answer" if update.get("confident") else "Searching the web"
+    if node == "web_fallback":
+        return None if update.get("path") == "not_found" else "Writing the answer"
+    if node == "generate":
+        return "Checking the answer against its sources"
+    if node == "evaluate":
+        return "Rewriting more strictly" if update.get("retry") else None
+    return None
+
+
+def result_payload(result: AgentResult, elapsed: float) -> dict:
+    ev = result.evaluation
+    return {
+        "answer": result.answer,
+        "path": result.path,
+        "sources": [{"n": s.n, "title": s.title, "url": s.url, "site": s.source, "origin": s.source_type,
+                     "published_at": s.published_at, "similarity": round(s.similarity, 3)} for s in result.sources],
+        "evaluation": None if ev is None else {"verdict": ev.verdict, "tier": ev.tier, "legal": ev.legal,
+                                               "min_similarity": round(ev.min_sim, 3), "problems": ev.problems[:3]},
+        "trace": result.trace,
+        "usage": {"prompt_tokens": result.prompt_tokens, "completion_tokens": result.completion_tokens,
+                  "web_calls": result.web_calls},
+        "elapsed_seconds": round(elapsed, 1),
+    }
+
+
+def chat_events(request: ChatRequest) -> Iterator[str]:
+    started = time.time()
+    history = [m.model_dump() for m in request.history]
+    yield sse("status", {"node": "start", "summary": [], "next": "Reading your question"})
+    try:
+        for kind, *rest in stream_agent(request.message, history, run_label="api"):
+            if kind == "node":
+                node, update = rest
+                if node == "evaluate" and update.get("retry"):
+                    yield sse("restart", {})  # the streamed draft is being thrown away
+                yield sse("status", {"node": node, "summary": update.get("trace", []), "next": next_step(node, update)})
+            elif kind == "token":
+                yield sse("token", {"text": rest[0]})
+            else:
+                yield sse("result", result_payload(rest[0], time.time() - started))
+    except Exception:  # noqa: BLE001 - show the user a generic message, keep details in the server log
+        log.exception("chat turn failed")
+        yield sse("error", {"message": "Something went wrong while answering. Please try again."})
+
+
+@app.post("/api/chat")
+def chat(request: ChatRequest) -> StreamingResponse:
+    return StreamingResponse(chat_events(request), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@app.get("/api/health")
+def health() -> dict:
+    return {"status": "ok"}
+
+
+@app.get("/api/stats")
+def stats() -> dict:
+    """Corpus size for the UI footer."""
+    with connect() as conn:
+        by_type = dict(conn.execute("select source_type, count(*) from articles group by 1").fetchall())
+        chunks = conn.execute("select count(*) from chunks").fetchone()[0]
+        last = conn.execute("select max(finished_at) from ingest_runs").fetchone()[0]
+    return {"articles": sum(by_type.values()), "curated_articles": by_type.get("feed", 0),
+            "web_articles": by_type.get("web", 0), "chunks": chunks, "last_ingest": last}

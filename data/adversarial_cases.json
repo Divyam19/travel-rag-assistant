@@ -1,0 +1,156 @@
+[
+ {
+  "id": "adv01",
+  "base": "a02",
+  "kind": "contradiction",
+  "replace": [
+   "Level 3: Reconsider Travel",
+   "Level 1: Exercise Normal Precautions"
+  ],
+  "expect": "flagged"
+ },
+ {
+  "id": "adv02",
+  "base": "a07",
+  "kind": "contradiction",
+  "replace": [
+   "11.8%",
+   "18.4%"
+  ],
+  "expect": "flagged"
+ },
+ {
+  "id": "adv03",
+  "base": "d01",
+  "kind": "contradiction",
+  "replace": [
+   "69.4 inches",
+   "72.0 inches"
+  ],
+  "expect": "flagged"
+ },
+ {
+  "id": "adv04",
+  "base": "d02",
+  "kind": "contradiction",
+  "replace": [
+   "2,500",
+   "5,000"
+  ],
+  "expect": "flagged",
+  "note": "Anchor tamper strings on the figure alone: model wording around it changes on every regeneration."
+ },
+ {
+  "id": "adv05",
+  "base": "a09",
+  "kind": "contradiction",
+  "replace": [
+   [
+    "4:3",
+    "3:2"
+   ],
+   [
+    "4 to 3",
+    "3 to 2"
+   ],
+   [
+    "4-to-3",
+    "3-to-2"
+   ]
+  ],
+  "expect": "flagged"
+ },
+ {
+  "id": "adv06",
+  "base": "a05",
+  "kind": "contradiction",
+  "replace": [
+   "Level 4: Do Not Travel",
+   "Level 2: Exercise Increased Caution"
+  ],
+  "expect": "flagged"
+ },
+ {
+  "id": "adv07",
+  "base": "a14",
+  "kind": "contradiction",
+  "replace": [
+   [
+    "64 business",
+    "24 business"
+   ],
+   [
+    "64 Polaris",
+    "24 Polaris"
+   ],
+   [
+    "64 seats",
+    "24 seats"
+   ]
+  ],
+  "expect": "flagged"
+ },
+ {
+  "id": "adv08",
+  "base": "a10",
+  "kind": "fabricated",
+  "append": " The card also includes a free lifetime Global Entry membership for the primary cardholder.",
+  "expect": "flagged"
+ },
+ {
+  "id": "adv09",
+  "base": "a15",
+  "kind": "fabricated",
+  "append": " Health officials said the outbreak has since spread to Munich airport.",
+  "expect": "flagged"
+ },
+ {
+  "id": "adv10",
+  "base": "a03",
+  "kind": "fabricated",
+  "append": " The UK government also announced that Thailand will close its borders to tourists next month.",
+  "expect": "flagged"
+ },
+ {
+  "id": "adv11",
+  "base": "a14",
+  "kind": "fabricated",
+  "append": " United has confirmed it will cancel all remaining 787-9 orders.",
+  "expect": "flagged"
+ },
+ {
+  "id": "adv12",
+  "base": "a13",
+  "kind": "fabricated",
+  "append": " Airports in Asia typically place baggage claim directly beside the gates.",
+  "expect": "flagged"
+ },
+ {
+  "id": "adv13",
+  "base": "a09",
+  "kind": "fabricated",
+  "append": " Chase also confirmed it will extend the 1:1 ratio through the end of next year.",
+  "expect": "flagged"
+ },
+ {
+  "id": "adv14",
+  "base": "o02",
+  "kind": "legal",
+  "expect": "not_pass",
+  "note": "Unmodified real answer that states a visa requirement as fact."
+ },
+ {
+  "id": "adv15",
+  "base": "a03",
+  "kind": "legal",
+  "append": " You do not need a visa for stays under 90 days, so you can simply enter without any paperwork.",
+  "expect": "flagged"
+ },
+ {
+  "id": "adv16",
+  "base": "a05",
+  "kind": "legal",
+  "append": " US citizens can legally enter Ukraine without a visa for up to 90 days.",
+  "expect": "flagged"
+ }
+]

@@ -1,0 +1,313 @@
+[
+ {
+  "id": "a01",
+  "category": "answerable",
+  "query": "Is it safe to travel to Iraq right now?",
+  "expect_titles": [
+   "Iraq"
+  ]
+ },
+ {
+  "id": "a02",
+  "category": "answerable",
+  "query": "What is the US travel advisory level for Qatar?",
+  "expect_titles": [
+   "Qatar"
+  ]
+ },
+ {
+  "id": "a03",
+  "category": "answerable",
+  "query": "What does the UK government advise about travelling to Thailand?",
+  "expect_titles": [
+   "Thailand"
+  ]
+ },
+ {
+  "id": "a04",
+  "category": "answerable",
+  "query": "Should Americans reconsider travel to the United Arab Emirates?",
+  "expect_titles": [
+   "United Arab Emirates"
+  ]
+ },
+ {
+  "id": "a05",
+  "category": "answerable",
+  "query": "Is Ukraine safe to visit?",
+  "expect_titles": [
+   "Ukraine"
+  ]
+ },
+ {
+  "id": "a06",
+  "category": "answerable",
+  "query": "What's the latest advice for travelling to Mexico?",
+  "expect_titles": [
+   "Mexico"
+  ]
+ },
+ {
+  "id": "a07",
+  "category": "answerable",
+  "query": "How much did US tourism drop in August?",
+  "expect_titles": [
+   "U.S. Tourism Slide"
+  ]
+ },
+ {
+  "id": "a08",
+  "category": "answerable",
+  "query": "Why are ultra-low-cost airlines struggling with jet fuel prices?",
+  "expect_titles": [
+   "Ultra-Low-Cost Carriers"
+  ]
+ },
+ {
+  "id": "a09",
+  "category": "answerable",
+  "query": "Should I transfer Chase points to Hyatt before October 1?",
+  "expect_titles": [
+   "Chase points to Hyatt"
+  ]
+ },
+ {
+  "id": "a10",
+  "category": "answerable",
+  "query": "Is the Marriott Bonvoy Brilliant Amex worth the annual fee?",
+  "expect_titles": [
+   "Marriott Bonvoy Brilliant"
+  ]
+ },
+ {
+  "id": "a11",
+  "category": "answerable",
+  "query": "Which credit cards offer lounge access for authorized users?",
+  "expect_titles": [
+   "lounge access to authorized users"
+  ]
+ },
+ {
+  "id": "a12",
+  "category": "answerable",
+  "query": "How can I sleep in an airport without getting kicked out?",
+  "expect_titles": [
+   "Sleep in Airports"
+  ]
+ },
+ {
+  "id": "a13",
+  "category": "answerable",
+  "query": "Why is baggage claim always so far from the gate?",
+  "expect_titles": [
+   "Baggage Claim"
+  ]
+ },
+ {
+  "id": "a14",
+  "category": "answerable",
+  "query": "Why are United's new 787-9s a problem for its Polaris lounges?",
+  "expect_titles": [
+   "Polaris Lounge"
+  ]
+ },
+ {
+  "id": "a15",
+  "category": "answerable",
+  "query": "What is the malaria outbreak at Frankfurt airport?",
+  "expect_titles": [
+   "Frankfurt Airport"
+  ]
+ },
+ {
+  "id": "a16",
+  "category": "answerable",
+  "query": "What are the cheapest cities in the world?",
+  "expect_titles": [
+   "Cheapest cities"
+  ]
+ },
+ {
+  "id": "a17",
+  "category": "answerable",
+  "query": "Where can I see fall foliage in the US this year?",
+  "expect_titles": [
+   "fall foliage"
+  ]
+ },
+ {
+  "id": "a18",
+  "category": "answerable",
+  "query": "What are the best credit card welcome offers this September?",
+  "expect_titles": [
+   "welcome offers",
+   "travel deals for September"
+  ]
+ },
+ {
+  "id": "o01",
+  "category": "out_of_index",
+  "query": "What are Ryanair's current cabin baggage fees?",
+  "expect_titles": []
+ },
+ {
+  "id": "o02",
+  "category": "out_of_index",
+  "query": "Do I need a visa to visit Vietnam as a US citizen?",
+  "expect_titles": [],
+  "note": "Legal/visa question; the index has safety advisories but no visa rules. Must not be answered from advisories."
+ },
+ {
+  "id": "o03",
+  "category": "out_of_index",
+  "query": "What are the best hotels in Lisbon under 150 euros a night?",
+  "expect_titles": []
+ },
+ {
+  "id": "o04",
+  "category": "out_of_index",
+  "query": "How much is a taxi from Heathrow to central London?",
+  "expect_titles": [],
+  "note": "Trap: a Skift article about Heathrow exists but does not answer this."
+ },
+ {
+  "id": "o05",
+  "category": "out_of_index",
+  "query": "What's the weather like in Bali in November?",
+  "expect_titles": []
+ },
+ {
+  "id": "o06",
+  "category": "out_of_index",
+  "query": "Which airlines fly nonstop from Chicago to Reykjavik?",
+  "expect_titles": []
+ },
+ {
+  "id": "o07",
+  "category": "out_of_index",
+  "query": "Is there a rail strike in France this week?",
+  "expect_titles": []
+ },
+ {
+  "id": "o08",
+  "category": "out_of_index",
+  "query": "Where can I find the best pizza in Naples?",
+  "expect_titles": []
+ },
+ {
+  "id": "o09",
+  "category": "out_of_index",
+  "query": "Who won the Premier League last season?",
+  "expect_titles": [],
+  "note": "Off-topic, not travel."
+ },
+ {
+  "id": "o10",
+  "category": "out_of_index",
+  "query": "What is the capital of Australia?",
+  "expect_titles": [],
+  "note": "Off-topic, not travel."
+ },
+ {
+  "id": "m01",
+  "category": "ambiguous",
+  "query": "What's the best time to visit?",
+  "expect_titles": []
+ },
+ {
+  "id": "m02",
+  "category": "ambiguous",
+  "query": "Is it safe?",
+  "expect_titles": []
+ },
+ {
+  "id": "m03",
+  "category": "ambiguous",
+  "query": "Do I need a visa?",
+  "expect_titles": []
+ },
+ {
+  "id": "m04",
+  "category": "ambiguous",
+  "query": "How much does it cost?",
+  "expect_titles": []
+ },
+ {
+  "id": "m05",
+  "category": "ambiguous",
+  "query": "Which card should I get?",
+  "expect_titles": []
+ },
+ {
+  "id": "d01",
+  "category": "detail",
+  "query": "What is the fan diameter of the LEAP-1B engine compared with the LEAP-1A?",
+  "expect_titles": [
+   "737 MAX"
+  ],
+  "expect_text": "69.4"
+ },
+ {
+  "id": "d02",
+  "category": "detail",
+  "query": "How many Choice Privileges points is the milestone reward for 20 qualifying nights?",
+  "expect_titles": [
+   "Choice Privileges"
+  ],
+  "expect_text": "2,500"
+ },
+ {
+  "id": "d03",
+  "category": "detail",
+  "query": "What perks can I pick on the Virgin Red Rewards Mastercard after spending $15,000 in a year?",
+  "expect_titles": [
+   "Virgin Red"
+  ],
+  "expect_text": "Personal Perks"
+ },
+ {
+  "id": "d04",
+  "category": "detail",
+  "query": "Which is better for everyday spending, the AAdvantage Globe or the Executive card?",
+  "expect_titles": [
+   "AAdvantage Executive"
+  ],
+  "expect_text": "everyday spending"
+ },
+ {
+  "id": "d05",
+  "category": "detail",
+  "query": "What are the cons of the Discover it Cash Back card?",
+  "expect_titles": [
+   "Discover it Cash Back"
+  ],
+  "expect_text": "No traditional welcome offer"
+ },
+ {
+  "id": "d06",
+  "category": "detail",
+  "query": "How many B-1 Lancers were mission-capable in 2019?",
+  "expect_titles": [
+   "B-1B"
+  ],
+  "expect_text": "fewer than ten"
+ },
+ {
+  "id": "d07",
+  "category": "detail",
+  "query": "How are the center seats laid out in Delta One Suites?",
+  "expect_titles": [
+   "Delta One Suites"
+  ],
+  "expect_text": "shift either to the right or to the left"
+ },
+ {
+  "id": "d08",
+  "category": "detail",
+  "query": "What does research say about airline competition and on-time performance?",
+  "expect_titles": [
+   "Airline Law"
+  ],
+  "expect_text": "competition improves on-time performances"
+ }
+]

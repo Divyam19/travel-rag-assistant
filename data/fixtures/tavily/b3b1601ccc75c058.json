@@ -1,0 +1,45 @@
+{
+ "query": "What are the baggage allowance rules for Vistara domestic flights?",
+ "follow_up_questions": null,
+ "answer": null,
+ "images": [],
+ "results": [
+  {
+   "url": "https://www.facebook.com/fb-answers/vistara-baggage-policy",
+   "title": "Vistara Baggage Policy: Carry-On, Checked Bags, and ...",
+   "content": "On Vistara domestic flights, most economy passengers get one checked bag with a 15kg limit. ... Domestic flight baggage rules \u00b7 Airline baggage allowance",
+   "score": 0.92359936,
+   "raw_content": null,
+   "id": "95dbd5-00"
+  },
+  {
+   "url": "https://www.alternativeairlines.com/vistara",
+   "title": "Vistara | Book Flights Online & Save",
+   "content": "Unlock discounts, deals & destination inspiration\n\n## Baggage Policy\n\nThe carry-on and checked baggage allowance rules for Vistara will vary depending on the cabin class you're flying in. Read below to find out what size and weight restrictions you need to follow.\n\n### Carry-on Baggage\n\nAll carry-on baggage cannot exceed 55cm x 40cm x 20cm (22\" x 16\" x 8\") in the three dimensions.\n\nEconomy Class passengers carry-on baggage allowance is 7kg. [...] Premium Economy Class passengers carry-on baggage allowance is 10kg.\n\nBusiness Class passengers carry-on baggage allowance is 12kg.\n\n### Checked Baggage\n\nChecked baggage allowance depends on the ticket purchased and the class passengers are travelling in. Please check your ticket for more information. No individual luggage should exceed 32kg for safety reasons.\n\n## Cabin Classes [...] Vistara was the first airline to introduce premium economy seats on domestic routes in India and has a total of three different cabin classes to choose from. The airline is a full-service airline, with service such as baggage allowance and meals/snacks included in the price of the ticket. Vistara was established as a joint venture between Tata Sons (owns 51%) and Singapore Airlines (owns 49%).",
+   "score": 0.8978479,
+   "raw_content": null,
+   "id": "79c7be-01"
+  },
+  {
+   "url": "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html",
+   "title": "Checked Baggage Allowance - Limits and Guidelines",
+   "content": "Hide View. Domestic flights ; Economy* \u00b7 Flex, 25 kg/55 lb ; Premium economy, Value, 15 kg/33 lb ; Premium economy \u00b7 Flex, 25 kg/55 lb ; Business, Value, 30kg/66 lb.",
+   "score": 0.56431514,
+   "raw_content": null,
+   "id": "935157-02"
+  },
+  {
+   "url": "https://www.youtube.com/watch?v=x157a4V9Xuc",
+   "title": "Vistara Baggage Rules: What You Need to Know",
+   "content": "Vistara Baggage Rules: What You Need to Know Fly hassle-free with Vistara! Learn about cabin and check-in baggage rules, weight limits,",
+   "score": 0.55420566,
+   "raw_content": null,
+   "id": "fc5ddf-03"
+  }
+ ],
+ "response_time": 0.65,
+ "usage": {
+  "credits": 1
+ },
+ "request_id": "a97e4730-eed1-4320-af15-e58f02e5130b"
+}

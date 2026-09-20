@@ -1,0 +1,45 @@
+{
+ "query": "Tell me about flights from Kanpur to Delhi and Bangalore.",
+ "follow_up_questions": null,
+ "answer": null,
+ "images": [],
+ "results": [
+  {
+   "url": "https://www.goibibo.com/flights/kanpur-to-bangalore-flights",
+   "title": "Kanpur to Bangalore Flights",
+   "content": "Kanpur to Bangalore flights on Goibibo start from \u20b97088, with today's lowest fare available from \u20b914429 on IndiGo. Around 11 flights operate",
+   "score": 0.7898345,
+   "raw_content": null,
+   "id": "f51e82-00"
+  },
+  {
+   "url": "https://www.trip.com/hot/kanpur-to-bangalore-flight-time",
+   "title": "Kanpur to Bangalore flight time & Schedules",
+   "content": "Time 2 hours 29 minutes Cheapest Flight Price US$71. It takes about 2 hours 30 minutes to fly from Kanpur to Bengaluru. usually on Tuesday, Wednesday, and",
+   "score": 0.77548623,
+   "raw_content": null,
+   "id": "862dc5-01"
+  },
+  {
+   "url": "https://www.makemytrip.com/flights/kanpur-bangalore-cheap-airtickets.html",
+   "title": "Kanpur to Bangalore Flights, Fares ...",
+   "content": "Book cheap flights from Kanpur to Bangalore fares starting from \u20b9 7088, with around 13 flights available every day. The fastest flight takes approximately",
+   "score": 0.74785584,
+   "raw_content": null,
+   "id": "cadcd5-02"
+  },
+  {
+   "url": "https://www.airindia.com/en-us/book-flights/kanpur-to-bangalore-flights",
+   "title": "Kanpur to Bangalore flights, Price @ + Upto ...",
+   "content": "Book Kanpur to Bangalore flights at best airfare with Air India & get flight tickets @ . Apply AISAVER & get up to \u20b91000 off on air",
+   "score": 0.62000114,
+   "raw_content": null,
+   "id": "83953d-03"
+  }
+ ],
+ "response_time": 0.81,
+ "usage": {
+  "credits": 1
+ },
+ "request_id": "39cd2238-bedd-48fa-b03e-9aca07b38a98"
+}
