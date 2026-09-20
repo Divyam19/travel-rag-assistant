@@ -15,6 +15,18 @@ from .rag import Source
 JOIN = "\n\n"
 
 
+def interleave(groups: list[list]) -> list:
+    """Take one item from each group in turn: [a1, a2, a3], [b1, b2] -> a1, b1, a2, b2, a3.
+
+    Used to share a page budget between the parts of a multi-part question. Concatenating the
+    groups and truncating gave the first part everything and starved the rest.
+    """
+    from itertools import chain, zip_longest
+
+    skip = object()
+    return [x for x in chain.from_iterable(zip_longest(*groups, fillvalue=skip)) if x is not skip]
+
+
 def drop_weak(sources: list[Source], floor_ratio: float) -> list[Source]:
     """Drop hits far below the best one. A 0.37 match beside a 0.72 match is noise, and expanding
     its neighbours would spend hundreds of tokens on an unrelated page. The top hit always stays."""

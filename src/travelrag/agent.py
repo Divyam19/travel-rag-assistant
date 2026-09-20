@@ -26,7 +26,7 @@ from langgraph.config import get_stream_writer
 from langgraph.graph import END, StateGraph
 
 from .config import get_settings
-from .context import build_web_context, select_context
+from .context import build_web_context, interleave, select_context
 from .evaluation import CAVEAT, DISCLAIMER, EvalResult, evaluate_answer
 from .llm import chat, chat_stream, embed_query, embed_texts, parse_json
 from .rag import Source, search_index
@@ -191,6 +191,15 @@ def retrieve(state: AgentState) -> dict:
             "trace": [f"retrieve: {len(sources)} chunks{note}, top score {max(part_scores):.3f}"]}
 
 
+def weakest_part(question: str, parts: list[str], scores: list[float]) -> str:
+    """The text of whichever search scored lowest. scores[0] belongs to `question`, scores[1:] to
+    `parts`. Judging the weakest one is the point: a strong part must not vouch for a weak one."""
+    if not parts or len(scores) != len(parts) + 1:
+        return question
+    lowest = scores.index(min(scores))
+    return question if lowest == 0 else parts[lowest - 1]
+
+
 def assess(state: AgentState) -> dict:
     s = get_settings()
     # A part of a multi-part question needs stronger evidence before we skip the web. A single
@@ -202,10 +211,9 @@ def assess(state: AgentState) -> dict:
         return {"confident": band == "confident", "trace": [f"assess: {band}"]}
     excerpts = "\n\n".join(f"[{i + 1}] {src.title}\n{src.content[:JUDGE_EXCERPT_CHARS]}"
                            for i, src in enumerate(state["sources"][:JUDGE_EXCERPTS]))
-    parts = state.get("sub_queries") or []
-    scores = state.get("part_scores") or []
-    weakest = parts[scores.index(min(scores)) - 1] if parts and len(scores) == len(parts) + 1 else None
-    user = f"Question: {weakest or state['standalone_query']}\n\nExcerpts:\n{excerpts}"
+    weakest = weakest_part(state["standalone_query"], state.get("sub_queries") or [],
+                           state.get("part_scores") or [])
+    user = f"Question: {weakest}\n\nExcerpts:\n{excerpts}"
     text, usage = _chat(state, [{"role": "system", "content": JUDGE_PROMPT}, {"role": "user", "content": user}],
                         s.small_model, "confidence_judge", json_mode=True)
     sufficient = parse_json(text).get("sufficient") is True
@@ -245,7 +253,7 @@ def web_fallback(state: AgentState) -> dict:
         outcomes = list(pool.map(lambda q: _safely(one, q), queries[: s.max_sub_queries]))
 
     seen: set[str] = set()
-    to_fetch: list = []
+    per_part: list[list] = []
     for outcome, error in outcomes:
         if error:
             failures.append(error)
@@ -255,9 +263,11 @@ def web_fallback(state: AgentState) -> dict:
         live += origin.startswith("live")
         fresh = [r for r in results if r.url not in seen][: s.tavily_max_results]
         seen.update(r.url for r in fresh)
-        to_fetch.extend(fresh)
+        per_part.append(fresh)
+    # Round-robin, so every part keeps its best results when the page cap bites.
+    to_fetch = interleave(per_part)[: s.web_max_pages]
     if to_fetch:
-        pages = fetch_pages(to_fetch[: s.web_max_pages])
+        pages = fetch_pages(to_fetch)
 
     if not pages and failures:
         note = f"web: unavailable ({failures[0]})"
