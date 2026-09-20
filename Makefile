@@ -6,7 +6,7 @@ CRON_LINE := 0 */4 * * * cd $(CURDIR) && $(PY) -m travelrag.ingest >> logs/inges
 
 setup:
 	python3.12 -m venv .venv
-	$(PY) -m pip install -q -e .
+	$(PY) -m pip install -q -e ".[dev]"
 
 migrate:
 	$(PY) -m travelrag.migrate
