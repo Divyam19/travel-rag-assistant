@@ -6,9 +6,17 @@ from fastapi.testclient import TestClient
 from travelrag import api
 from travelrag.agent import AgentResult
 from travelrag.evaluation import EvalResult
+from travelrag.ratelimit import RateLimiter
 from travelrag.rag import Source
 
 client = TestClient(api.app)  # no `with`: skips the lifespan, so no database connection is opened
+
+
+@pytest.fixture(autouse=True)
+def fresh_limiter(monkeypatch):
+    """Every test gets its own generous limiter, so the shared module-level one never leaks state
+    between tests and a growing suite cannot trip the per-minute limit by accident."""
+    monkeypatch.setattr(api, "limiter", RateLimiter(per_minute=1000, per_day=100000))
 
 
 def parse_sse(text: str) -> list[tuple[str, dict]]:
@@ -106,3 +114,50 @@ def test_source_round_trips_through_its_dict_form():
     restored = Source.from_dict(original.to_dict())
     assert restored == Source(2, "T", "https://x.test", "site", datetime(2026, 9, 18, 10, 30), 0.712, "body text", "web", 42)
     assert "content" not in original.to_dict(include_text=False) and "chunk_id" not in original.to_dict(include_text=False)
+
+
+class FakeClock:
+    def __init__(self):
+        self.now = 1000.0
+
+    def __call__(self):
+        return self.now
+
+
+def test_a_client_is_limited_per_minute_and_recovers_when_the_window_passes():
+    from travelrag.ratelimit import RateLimiter
+    clock = FakeClock()
+    limiter = RateLimiter(per_minute=3, per_day=100, clock=clock)
+    assert [limiter.check("a")[0] for _ in range(4)] == [True, True, True, False]
+    allowed, wait, reason = limiter.check("a")
+    assert not allowed and 1 <= wait <= 61 and "too quickly" in reason
+    clock.now += 61
+    assert limiter.check("a")[0]
+
+
+def test_clients_are_limited_independently():
+    from travelrag.ratelimit import RateLimiter
+    limiter = RateLimiter(per_minute=1, per_day=100, clock=FakeClock())
+    assert limiter.check("a")[0] and not limiter.check("a")[0]
+    assert limiter.check("b")[0]
+
+
+def test_the_daily_cap_applies_across_clients_and_resets_the_next_day():
+    from travelrag.ratelimit import RateLimiter
+    day = ["2026-09-20"]
+    limiter = RateLimiter(per_minute=100, per_day=2, clock=FakeClock(), today=lambda: day[0])
+    assert limiter.check("a")[0] and limiter.check("b")[0]
+    allowed, _, reason = limiter.check("c")
+    assert not allowed and "daily" in reason
+    day[0] = "2026-09-21"
+    assert limiter.check("c")[0]
+
+
+def test_a_rate_limited_request_gets_429_with_retry_after_and_never_reaches_the_agent(monkeypatch):
+    monkeypatch.setattr(api.limiter, "check", lambda client: (False, 17, "Slow down."))
+    called = []
+    monkeypatch.setattr(api, "stream_agent", lambda *a, **k: called.append(1) or iter([]))
+    response = client.post("/api/chat", json={"message": "hi"})
+    assert response.status_code == 429
+    assert response.headers["retry-after"] == "17" and response.json() == {"detail": "Slow down."}
+    assert called == []  # no OpenAI or Tavily spend

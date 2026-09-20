@@ -23,6 +23,11 @@ export async function streamChat(
     body: JSON.stringify({ message, history }),
     signal,
   })
+  if (response.status === 429) {
+    const { detail } = await response.json().catch(() => ({ detail: '' }))
+    handlers.onError(detail || 'Too many requests. Please wait a moment and try again.')
+    return
+  }
   if (!response.ok || !response.body) {
     handlers.onError(response.status === 422 ? 'That message is too long or malformed.' : GENERIC_ERROR)
     return

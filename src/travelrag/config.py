@@ -63,8 +63,10 @@ class Settings(BaseSettings):
     eval_sim_pass: float = Field(0.60, ge=0, le=1)  # every answer sentence at least this similar to a source sentence: pass without an LLM (see docs/decisions.md)
     eval_sim_fail: float = Field(0.0, ge=0, le=1)  # any sentence below this is ungrounded without asking an LLM (0 = never)
 
-    # App
+    # App. Limits are per server process; see ratelimit.py.
     cors_origins: str = "http://localhost:5173"
+    rate_limit_per_minute: int = Field(10, ge=1)  # chat turns per client address per minute
+    daily_chat_cap: int = Field(300, ge=1)        # chat turns across all clients per UTC day
 
     @field_validator("openai_api_key", "supabase_db_url", "tavily_api_key")
     @classmethod

@@ -15,14 +15,15 @@ import time
 from contextlib import asynccontextmanager
 from typing import Iterator, Literal
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from .agent import AgentResult, stream_agent
 from .config import get_settings
 from .db import _get_pool, connect
+from .ratelimit import RateLimiter
 
 log = logging.getLogger("travelrag.api")
 
@@ -48,6 +49,9 @@ app.add_middleware(
     CORSMiddleware, allow_origins=[o.strip() for o in get_settings().cors_origins.split(",") if o.strip()],
     allow_methods=["GET", "POST"], allow_headers=["Content-Type"],
 )
+
+
+limiter = RateLimiter(get_settings().rate_limit_per_minute, get_settings().daily_chat_cap)
 
 
 def sse(event: str, data: dict) -> str:
@@ -107,7 +111,13 @@ def chat_events(request: ChatRequest) -> Iterator[str]:
 
 
 @app.post("/api/chat")
-def chat(request: ChatRequest) -> StreamingResponse:
+def chat(request: ChatRequest, http: Request):
+    # request.client is the direct peer. X-Forwarded-For is deliberately not trusted: any caller can
+    # forge it, which would let them dodge the limit. Behind a reverse proxy, configure the proxy
+    # to set the peer address instead.
+    allowed, wait, reason = limiter.check(http.client.host if http.client else "unknown")
+    if not allowed:
+        return JSONResponse({"detail": reason}, status_code=429, headers={"Retry-After": str(wait)})
     return StreamingResponse(chat_events(request), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
