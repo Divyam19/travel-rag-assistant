@@ -513,3 +513,15 @@ measured header shape.
 - **Tokenizer baked into the image** so the first request after a deploy never depends on a download.
 - A route registered after the `/` static mount is silently shadowed by it. The mount is therefore
   the last thing in `api.py`, and a temporary debug route I added at the end returned 404 until moved.
+
+### Automatic deploys
+
+The service is connected to the GitHub repository (branch `main`) with "wait for CI" on. Measured on a
+docs-only push: the deployment appeared within seconds in status `WAITING`, stayed there while the
+GitHub Actions run was `in_progress`, moved to `BUILDING` once it succeeded, and reached `SUCCESS`
+about 20 s later (56 s after the push). A push made before the gate was on deployed within 10 s,
+racing CI, which is why the gate is set.
+
+Not verified: that a **failing** CI run blocks the deploy. That needs a deliberately broken commit on
+`main`, and I did not want a red commit on the public branch. Railway's documented behaviour is to skip
+the deployment; treat that as documented rather than observed.
