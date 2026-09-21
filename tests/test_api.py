@@ -178,6 +178,15 @@ def test_behind_one_proxy_the_address_the_proxy_recorded_is_used_not_the_clients
     assert client_address("100.64.0.9", "6.6.6.6, 203.0.113.7, 100.64.0.1", hops=2) == "203.0.113.7"
 
 
+def test_railways_real_header_shape_yields_the_visitor_not_the_edge_proxy():
+    """Measured on a live Railway service: X-Forwarded-For is "client, edge-proxy". With one hop the
+    limiter picked the edge address and bucketed visitors by which edge node they reached."""
+    from travelrag.api import client_address
+    header = "42.107.222.22, 79.127.228.17"
+    assert client_address("100.64.0.2", header, hops=1) == "79.127.228.17"  # the mistake: an edge node
+    assert client_address("100.64.0.2", header, hops=2) == "42.107.222.22"  # the visitor
+
+
 def test_client_address_falls_back_safely_when_the_header_is_missing_or_too_short():
     from travelrag.api import client_address
     assert client_address("100.64.0.9", None, hops=1) == "100.64.0.9"

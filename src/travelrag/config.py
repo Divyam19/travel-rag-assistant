@@ -65,7 +65,7 @@ class Settings(BaseSettings):
 
     # App. Limits are per server process; see ratelimit.py.
     cors_origins: str = "http://localhost:5173"
-    # How many reverse proxies sit in front of the API (0 when reached directly, 1 on Railway).
+    # How many reverse proxies sit in front of the API (0 when reached directly, 2 on Railway).
     # Used to find the real client address in X-Forwarded-For; see api.client_address.
     trusted_proxy_hops: int = Field(0, ge=0, le=5)
     rate_limit_per_minute: int = Field(10, ge=1)  # chat turns per client address per minute

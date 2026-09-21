@@ -172,6 +172,37 @@ requests to each site and embeds about 1,700 chunks. For a quick demo-sized inde
 `.venv/bin/python -m travelrag.ingest --limit 10` instead. Re-running is safe: known articles are
 skipped before any request is made.
 
+## Deploy to Railway
+
+One container serves both the API and the built UI, so a deployment is a single service on a single
+origin (no CORS, no second proxy). The `Dockerfile` builds the React app, then the API image serves it.
+
+```bash
+railway init --name travel-rag-assistant
+railway add --service web
+# secrets go in via stdin so they never appear in a process list or shell history:
+railway variable set OPENAI_API_KEY --stdin --skip-deploys --service web    # then paste, Ctrl-D
+railway variable set SUPABASE_DB_URL --stdin --skip-deploys --service web
+railway variable set TAVILY_API_KEY  --stdin --skip-deploys --service web
+railway variable set TRUSTED_PROXY_HOPS --stdin --skip-deploys --service web <<< "2"
+railway up --service web            # uploads the folder (respects .gitignore, so .env stays local)
+railway domain --service web        # public https URL
+```
+
+Things worth knowing:
+
+- **`TRUSTED_PROXY_HOPS=2` is measured, not assumed.** Railway sends `X-Forwarded-For: client,
+  edge-proxy` and overwrites anything the caller supplied, so a forged header cannot get through. With
+  the value 1 the rate limiter picked Railway's edge address and bucketed visitors by edge node.
+- **One replica, in Singapore** (`railway.json`), close to the Supabase database. The rate limiter
+  keeps its counters in memory, so a second replica would silently double every limit.
+- The service is public and has no login. Spend is bounded by 10 questions a minute per visitor, 300 a
+  day overall, and Tavily's own daily cap. Lower `DAILY_CHAT_CAP` for a demo you do not want busy.
+- `railway.json` is the older config format. Railway keeps it working until 2026-12-01; migrate with
+  `railway config migrate`.
+- The index is filled from your machine (`make ingest`) or cron; the deployed service only reads it
+  and adds short-lived web pages.
+
 ## Try it: a five-minute demo
 
 | Ask | What you should see |

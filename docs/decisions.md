@@ -477,3 +477,39 @@ and stays.
 Also removed as dead: `api_host`/`api_port` (the port is set in the Makefile, so the settings did
 nothing), `web_context_top_n` (the web budget is `web_context_tokens` and `web_max_pages`), the unused
 Supabase REST credentials, and the superseded `store_results` write-back path.
+
+
+## Deployment (Railway)
+
+One container serves both the API and the built UI: a two-stage Dockerfile, no CORS, one service, one
+URL. Verified by building the image and running it locally before the first Railway build, which then
+took about a minute (the local first build took nine, mostly downloading packages).
+
+### What the live test found that the unit tests did not
+
+The rate limiter keyed on the direct connection address. Behind a proxy that is the proxy for
+everyone, so I added `TRUSTED_PROXY_HOPS` and took the `X-Forwarded-For` entry that many places from
+the right, and set it to 1. Testing on the live site showed that was wrong, and a temporary route that
+echoed the headers showed why:
+
+    x-forwarded-for: 42.107.222.22, 79.127.228.17     (my address, then Railway's edge proxy)
+
+With one hop the limiter picked the edge address, so visitors were bucketed by which edge node they
+reached and the limit behaved erratically (three requests got through a limit of two). The right value
+is 2. The same experiment showed Railway **replaces** the header, so a caller's forged
+`X-Forwarded-For: 6.6.6.6` never arrives. After the fix a forged header from the same client is
+refused like any other request. Unit tests pin both header shapes.
+
+Not verified live: that two different visitors get separate buckets. The only second network path I
+had needed an SSH key registered on the account. That property rests on the unit tests and on the
+measured header shape.
+
+### Choices
+
+- **Region Singapore, one replica.** Nearest to the Seoul database, and the in-memory limiter forbids
+  more than one replica.
+- **Public and unauthenticated.** Bounded by the per-visitor limit, the daily cap and Tavily's cap,
+  not by a login.
+- **Tokenizer baked into the image** so the first request after a deploy never depends on a download.
+- A route registered after the `/` static mount is silently shadowed by it. The mount is therefore
+  the last thing in `api.py`, and a temporary debug route I added at the end returned 404 until moved.
