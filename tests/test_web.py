@@ -23,7 +23,13 @@ def test_parse_results_filters_and_dedupes():
 
 @pytest.fixture
 def clean_day():
-    with connect(with_vectors=False) as conn:
+    """These tests exercise the atomic daily-cap SQL, so they need a real Postgres. On a machine
+    without one (CI, a fresh clone with no database) they skip instead of failing."""
+    try:
+        conn = connect(with_vectors=False)
+    except Exception as error:  # noqa: BLE001 - any connection failure means "no database here"
+        pytest.skip(f"no reachable database: {type(error).__name__}")
+    with conn:
         conn.execute("delete from tavily_usage where day = %s", (TEST_DAY,))
     yield
     with connect(with_vectors=False) as conn:
