@@ -1,0 +1,15 @@
+.git
+.venv
+.env
+.env.*
+!.env.example
+.pytest_cache
+__pycache__
+*.pyc
+*.egg-info
+logs
+docs
+tests
+frontend/node_modules
+frontend/dist
+data/fixtures

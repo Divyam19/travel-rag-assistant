@@ -161,3 +161,47 @@ def test_a_rate_limited_request_gets_429_with_retry_after_and_never_reaches_the_
     assert response.status_code == 429
     assert response.headers["retry-after"] == "17" and response.json() == {"detail": "Slow down."}
     assert called == []  # no OpenAI or Tavily spend
+
+
+def test_client_address_uses_the_direct_peer_when_no_proxy_is_trusted():
+    from travelrag.api import client_address
+    assert client_address("10.0.0.5", "1.2.3.4", hops=0) == "10.0.0.5"  # header ignored: it can be forged
+    assert client_address(None, None, hops=0) == "unknown"
+
+
+def test_behind_one_proxy_the_address_the_proxy_recorded_is_used_not_the_clients_claim():
+    """Railway's proxy appends the real address to the right. Anything to its left was supplied by
+    the client, so trusting the leftmost entry would let anyone dodge the limit by forging it."""
+    from travelrag.api import client_address
+    assert client_address("100.64.0.9", "203.0.113.7", hops=1) == "203.0.113.7"
+    assert client_address("100.64.0.9", "6.6.6.6, 203.0.113.7", hops=1) == "203.0.113.7"  # forged prefix ignored
+    assert client_address("100.64.0.9", "6.6.6.6, 203.0.113.7, 100.64.0.1", hops=2) == "203.0.113.7"
+
+
+def test_client_address_falls_back_safely_when_the_header_is_missing_or_too_short():
+    from travelrag.api import client_address
+    assert client_address("100.64.0.9", None, hops=1) == "100.64.0.9"
+    assert client_address("100.64.0.9", "", hops=1) == "100.64.0.9"
+    assert client_address("100.64.0.9", "203.0.113.7", hops=2) == "100.64.0.9"  # fewer entries than hops
+
+
+def test_the_built_frontend_is_served_at_the_root_and_the_api_still_wins(tmp_path, monkeypatch):
+    from fastapi import FastAPI
+    from travelrag.api import mount_frontend
+    (tmp_path / "index.html").write_text("<html>travel ui</html>")
+    fresh = FastAPI()
+
+    @fresh.get("/api/health")
+    def health():
+        return {"status": "ok"}
+
+    assert mount_frontend(fresh, tmp_path) is True
+    test = TestClient(fresh)
+    assert "travel ui" in test.get("/").text
+    assert test.get("/api/health").json() == {"status": "ok"}  # the static mount must not shadow routes
+
+
+def test_without_a_build_the_api_runs_alone(tmp_path):
+    from fastapi import FastAPI
+    from travelrag.api import mount_frontend
+    assert mount_frontend(FastAPI(), tmp_path / "missing") is False

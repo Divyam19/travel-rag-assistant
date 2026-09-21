@@ -18,10 +18,11 @@ from typing import Iterator, Literal
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .agent import AgentResult, stream_agent
-from .config import get_settings
+from .config import ROOT, get_settings
 from .db import _get_pool, connect
 from .ratelimit import RateLimiter
 
@@ -52,6 +53,22 @@ app.add_middleware(
 
 
 limiter = RateLimiter(get_settings().rate_limit_per_minute, get_settings().daily_chat_cap)
+
+
+def client_address(peer: str | None, forwarded_for: str | None, hops: int) -> str:
+    """The address to rate-limit on.
+
+    Reached directly (hops=0) the peer is the client. Behind `hops` trusted reverse proxies the peer
+    is the proxy, and every visitor would share one bucket, so use X-Forwarded-For instead. Each
+    proxy appends the address it saw, so the entry `hops` places from the RIGHT is the one our own
+    proxy recorded and cannot be forged. The left-hand entries are whatever the client sent, which
+    is why the leftmost value must never be used.
+    """
+    if hops > 0 and forwarded_for:
+        parts = [p.strip() for p in forwarded_for.split(",") if p.strip()]
+        if len(parts) >= hops:
+            return parts[-hops]
+    return peer or "unknown"
 
 
 def sse(event: str, data: dict) -> str:
@@ -112,10 +129,9 @@ def chat_events(request: ChatRequest) -> Iterator[str]:
 
 @app.post("/api/chat")
 def chat(request: ChatRequest, http: Request):
-    # request.client is the direct peer. X-Forwarded-For is deliberately not trusted: any caller can
-    # forge it, which would let them dodge the limit. Behind a reverse proxy, configure the proxy
-    # to set the peer address instead.
-    allowed, wait, reason = limiter.check(http.client.host if http.client else "unknown")
+    address = client_address(http.client.host if http.client else None,
+                             http.headers.get("x-forwarded-for"), get_settings().trusted_proxy_hops)
+    allowed, wait, reason = limiter.check(address)
     if not allowed:
         return JSONResponse({"detail": reason}, status_code=429, headers={"Retry-After": str(wait)})
     return StreamingResponse(chat_events(request), media_type="text/event-stream",
@@ -136,3 +152,19 @@ def stats() -> dict:
         last = conn.execute("select max(finished_at) from ingest_runs").fetchone()[0]
     return {"articles": sum(by_type.values()), "curated_articles": by_type.get("feed", 0),
             "web_articles": by_type.get("web", 0), "chunks": chunks, "last_ingest": last}
+
+
+FRONTEND_DIST = ROOT / "frontend" / "dist"
+
+
+def mount_frontend(application: FastAPI, dist=FRONTEND_DIST) -> bool:
+    """Serve the built UI from the same origin as the API, so a deployment is one service and the
+    browser needs no CORS. Registered last so every /api route wins. Returns whether it mounted;
+    in development the Vite server serves the UI and there is no dist folder."""
+    if not (dist / "index.html").is_file():
+        return False
+    application.mount("/", StaticFiles(directory=dist, html=True), name="frontend")
+    return True
+
+
+mount_frontend(app)
