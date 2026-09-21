@@ -1,5 +1,7 @@
 # Travel Assistant
 
+[![CI](https://github.com/Divyam19/travel-rag-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/Divyam19/travel-rag-assistant/actions/workflows/ci.yml)
+
 A hybrid RAG chatbot for travel news. It answers from a curated index of scraped articles, asks a
 clarifying question when a request is ambiguous, falls back to a live web search when the index is thin,
 and checks every answer against its sources before showing it.
@@ -188,6 +190,11 @@ railway variable set TRUSTED_PROXY_HOPS --stdin --skip-deploys --service web <<<
 railway up --service web            # uploads the folder (respects .gitignore, so .env stays local)
 railway domain --service web        # public https URL
 ```
+
+**Automatic deploys.** The Railway service is connected to this repository, so every push to `main`
+deploys. The connection is set to wait for CI: Railway holds the deployment until the GitHub Actions
+checks (backend tests, frontend lint and build) finish, and does not deploy if they fail. Pull
+requests run the same checks but never deploy. To deploy by hand instead, `railway up --service web`.
 
 Things worth knowing:
 
