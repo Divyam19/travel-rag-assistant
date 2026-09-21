@@ -525,3 +525,13 @@ racing CI, which is why the gate is set.
 Not verified: that a **failing** CI run blocks the deploy. That needs a deliberately broken commit on
 `main`, and I did not want a red commit on the public branch. Railway's documented behaviour is to skip
 the deployment; treat that as documented rather than observed.
+
+### Answers without inline citations
+
+The answer no longer carries `[1]` markers or "Source 1 says"; the source cards under it are the
+citations, and the model is asked for a one-sentence direct answer plus short one-fact bullets. The
+checker never needed the markers (it strips them). A first attempt told the model to summarise "in
+your own words", which made the checker reject correct answers and force a second generation in
+3 of 6 runs on the Vietnam visa question (0 of 4 before). Keeping the sources' wording with one fact
+per bullet brought it back to 0 of 4. The prompt also tells the model not to add its own "confirm with
+the official source" line, since the app appends that note itself; it was appearing twice.
